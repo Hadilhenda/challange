@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Local Storage</title>
+    <script>
+      const localStorageWithExpiry = {
+        setItem: (key, value, expiryInSeconds) => {
+          const now = new Date()
+          const item = {
+            value: value,
+            expiry: now.getTime() + expiryInSeconds * 1000,
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+        getItem: (key) => {
+          const itemStr = localStorage.getItem(key)
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = new Date()
+          if (now.getTime() > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        },
+      }
+
+      localStorageWithExpiry.setItem('hadil', 'henda', 10)
+      console.log(localStorageWithExpiry.getItem('hadil'))
+      setTimeout(() => {
+        console.log(localStorageWithExpiry.getItem('hadil'))
+      }, 10000)
+    </script>
+  </head>
+  <body>
+    <h1>Bienvenue chez challange</h1>
+  </body>
+</html>
